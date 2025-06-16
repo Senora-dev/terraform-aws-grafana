@@ -1,0 +1,44 @@
+provider "aws" {
+  region = "us-west-2"
+}
+
+module "grafana" {
+  source = "../../"
+
+  environment_name = "prod"
+  
+  data_sources = [
+    "CLOUDWATCH",
+    "PROMETHEUS",
+    "XRAY"
+  ]
+
+  account_access_type = "CURRENT_ACCOUNT"
+  authentication_providers = ["AWS_SSO"]
+  permission_type = "SERVICE_MANAGED"
+  notification_destinations = ["SNS"]
+
+  workspace_api_keys = {
+    viewer = {
+      key_name        = "viewer"
+      key_role        = "VIEWER"
+      seconds_to_live = 3600
+    }
+    editor = {
+      key_name        = "editor"
+      key_role        = "EDITOR"
+      seconds_to_live = 3600
+    }
+    admin = {
+      key_name        = "admin"
+      key_role        = "ADMIN"
+      seconds_to_live = 3600
+    }
+  }
+
+  tags = {
+    Environment = "prod"
+    Terraform   = "true"
+    Project     = "example"
+  }
+} 

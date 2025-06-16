@@ -4,33 +4,21 @@ module "managed_grafana" {
   # Workspace
   name                      = "${var.environment_name}-grafana"
   description               = "AWS Managed Grafana service ${var.environment_name} environment."
-  account_access_type       = "CURRENT_ACCOUNT"
-  authentication_providers  = ["AWS_SSO"]
-  permission_type           = "SERVICE_MANAGED"
-  data_sources              = var.data_sources
-  notification_destinations = ["SNS"]
+  account_access_type       = var.account_access_type
+  authentication_providers  = var.authentication_providers
+  permission_type          = var.permission_type
+  data_sources             = var.data_sources
+  notification_destinations = var.notification_destinations
+  associate_license        = false  # Disable license association
 
   # Workspace API keys
-  workspace_api_keys = {
-    viewer = {
-      key_name        = "viewer"
-      key_role        = "VIEWER"
-      seconds_to_live = 3600
-    }
-    editor = {
-      key_name        = "editor"
-      key_role        = "EDITOR"
-      seconds_to_live = 3600
-    }
-    admin = {
-      key_name        = "admin"
-      key_role        = "ADMIN"
-      seconds_to_live = 3600
-    }
-  }
+  workspace_api_keys = var.workspace_api_keys
 
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment_name
-  }
+  tags = merge(
+    {
+      Terraform   = "true"
+      Environment = var.environment_name
+    },
+    var.tags
+  )
 }
