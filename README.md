@@ -12,7 +12,7 @@ This Terraform module provisions an AWS Managed Grafana workspace, configures au
 ## Usage
 ```hcl
 module "managed_grafana" {
-  source = "terraform-aws-modules/managed-service-grafana/aws"
+  source = "Senora-dev/grafana/aws"
 
   name                      = "${var.environment_name}-grafana"
   description               = "AWS Managed Grafana service ${var.environment_name} environment."
@@ -43,6 +43,10 @@ module "managed_grafana" {
   tags = {
     Terraform   = "true"
     Environment = var.environment_name
+  }
+
+  deployment_controller {
+    type = "CODE_DEPLOY"
   }
 }
 ```
